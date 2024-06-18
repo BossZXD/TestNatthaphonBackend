@@ -1,0 +1,46 @@
+version: "3.8"
+
+services:
+  nodejs-app:
+    container_name: node_ecommerce
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+  db:
+    image: mysql:5.7
+    restart: always
+    container_name: db
+    environment:
+      MYSQL_ROOT_PASSWORD: root # กำหนด user ของ root mysql
+      MYSQL_DATABASE: ecommerce # กำหนด database เริ่มต้นของ mysql
+    volumes:
+      - db_data:/var/lib/mysql/db
+    networks:
+      - app-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    ports:
+      - "8080:80"
+    environment:
+      PMA_HOST: db
+      PMA_USER: root # ระบุ user ของ Database
+      PMA_PASSWORD: root # ระบุ password ของ Database
+    depends_on:
+      - db
+    networks:
+      - app-network
+
+volumes:
+  db_data:
+
+networks:
+  app-network:
