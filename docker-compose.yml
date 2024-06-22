@@ -1,13 +1,13 @@
-version: "3.8"
-
 services:
   nodejs-app:
     container_name: node_ecommerce
     build: .
     ports:
-      - "3000:3000"
+      - "7077:7077"
     volumes:
-      - .:/usr/src/app
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+    command: sh -c "npm install && nodemon --legacy-watch app.js"
     depends_on:
       - db
     networks:
@@ -17,11 +17,12 @@ services:
     image: mysql:5.7
     restart: always
     container_name: db
+    command: mysqld --character-set-server=utf8 --collation-server=utf8_unicode_ci --init-connect='SET NAMES UTF8;' --innodb-flush-log-at-trx-commit=0
     environment:
-      MYSQL_ROOT_PASSWORD: root # กำหนด user ของ root mysql
-      MYSQL_DATABASE: ecommerce # กำหนด database เริ่มต้นของ mysql
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ecommerce
     volumes:
-      - db_data:/var/lib/mysql/db
+      - db_data:/var/lib/mysql
     networks:
       - app-network
 
@@ -32,8 +33,8 @@ services:
       - "8080:80"
     environment:
       PMA_HOST: db
-      PMA_USER: root # ระบุ user ของ Database
-      PMA_PASSWORD: root # ระบุ password ของ Database
+      PMA_USER: root
+      PMA_PASSWORD: root
     depends_on:
       - db
     networks:

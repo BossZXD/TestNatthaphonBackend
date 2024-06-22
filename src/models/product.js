@@ -2,14 +2,14 @@ const { DataTypes } = require("sequelize");
 const sequelize = require("../../config/db");
 
 const Product = sequelize.define(
-  "PRODUCT",
+  "product",
   {
-    productID: {
+    id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    productName: {
+    product_name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
@@ -24,16 +24,16 @@ const Product = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
+    isActive: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: true,
+    },
   },
   {
-    timestamps: false,
+    timestamps: true,
+    tableName: "product",
   }
 );
-
-ShoppingCart.hasMany(CartItem, { foreignKey: "cartID" });
-CartItem.belongsTo(ShoppingCart, { foreignKey: "cartID" });
-
-Product.hasMany(CartItem, { foreignKey: "productID" });
-CartItem.belongsTo(Product, { foreignKey: "productID" });
 
 module.exports = Product;

@@ -4,25 +4,25 @@ const Order = require("./order");
 const Product = require("./product");
 
 const OrderItem = sequelize.define(
-  "ORDER_ITEM",
+  "order_item",
   {
-    orderItemID: {
+    id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    orderID: {
+    order_id: {
       type: DataTypes.INTEGER,
       references: {
         model: Order,
-        key: "orderID",
+        key: "id",
       },
     },
-    productID: {
+    product_id: {
       type: DataTypes.INTEGER,
       references: {
         model: Product,
-        key: "productID",
+        key: "id",
       },
     },
     quantity: {
@@ -33,16 +33,21 @@ const OrderItem = sequelize.define(
       type: DataTypes.FLOAT,
       allowNull: false,
     },
+    status: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0, //0 ปกติ 1 เสร็จสิ้น 2 ยกเลิก
+    },
   },
   {
-    timestamps: false,
+    timestamps: true,
+    tableName: "order_item",
   }
 );
 
-Order.hasMany(OrderItem, { foreignKey: "orderID" });
-OrderItem.belongsTo(Order, { foreignKey: "orderID" });
+OrderItem.belongsTo(Order, { foreignKey: "id" });
+Order.hasMany(OrderItem, { foreignKey: "order_id" });
 
-Product.hasMany(OrderItem, { foreignKey: "productID" });
-OrderItem.belongsTo(Product, { foreignKey: "productID" });
-
+OrderItem.belongsTo(Product, { foreignKey: "id" });
+Product.hasMany(OrderItem, { foreignKey: "product_id" });
 module.exports = OrderItem;
